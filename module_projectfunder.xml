@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_projectfunder" default="compile.module.projectfunder">
+  <dirname property="module.projectfunder.basedir" file="${ant.file.module_projectfunder}"/>
+  
+  <property name="module.jdk.home.projectfunder" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.projectfunder" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.projectfunder" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.projectfunder" value="-encoding UTF-8 -source 11 -target 11 ${compiler.args}"/>
+  
+  <property name="projectfunder.output.dir" value="${module.projectfunder.basedir}/out/production/projectfunder"/>
+  <property name="projectfunder.testoutput.dir" value="${module.projectfunder.basedir}/out/test/projectfunder"/>
+  
+  <path id="projectfunder.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="projectfunder.module.production.classpath">
+    <path refid="${module.jdk.classpath.projectfunder}"/>
+  </path>
+  
+  <path id="projectfunder.runtime.production.module.classpath">
+    <pathelement location="${projectfunder.output.dir}"/>
+  </path>
+  
+  <path id="projectfunder.module.classpath">
+    <path refid="${module.jdk.classpath.projectfunder}"/>
+    <pathelement location="${projectfunder.output.dir}"/>
+  </path>
+  
+  <path id="projectfunder.runtime.module.classpath">
+    <pathelement location="${projectfunder.testoutput.dir}"/>
+    <pathelement location="${projectfunder.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.projectfunder">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.projectfunder">
+    <patternset refid="excluded.from.module.projectfunder"/>
+  </patternset>
+  
+  <path id="projectfunder.module.sourcepath">
+    <dirset dir="${module.projectfunder.basedir}">
+      <include name="src/main/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.projectfunder" depends="compile.module.projectfunder.production,compile.module.projectfunder.tests" description="Compile module projectfunder"/>
+  
+  <target name="compile.module.projectfunder.production" depends="register.custom.compilers" description="Compile module projectfunder; production classes">
+    <mkdir dir="${projectfunder.output.dir}"/>
+    <javac2 destdir="${projectfunder.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.projectfunder}/javac">
+      <compilerarg line="${compiler.args.projectfunder}"/>
+      <bootclasspath refid="projectfunder.module.bootclasspath"/>
+      <classpath refid="projectfunder.module.production.classpath"/>
+      <src refid="projectfunder.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.projectfunder"/>
+    </javac2>
+    
+    <copy todir="${projectfunder.output.dir}">
+      <fileset dir="${module.projectfunder.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.projectfunder.tests" depends="register.custom.compilers,compile.module.projectfunder.production" description="compile module projectfunder; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.projectfunder" description="cleanup module">
+    <delete dir="${projectfunder.output.dir}"/>
+    <delete dir="${projectfunder.testoutput.dir}"/>
+  </target>
+</project>
